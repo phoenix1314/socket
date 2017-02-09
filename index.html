@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title></title>
+	<script src="jq3.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		function getNowFormatDate() {
+				var date = new Date();
+				var seperator1 = "-";
+				var seperator2 = ":";
+				var month = date.getMonth() + 1;
+				var strDate = date.getDate();
+				if (month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if (strDate >= 0 && strDate <= 9) {
+					strDate = "0" + strDate;
+				}
+				var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+						+ " " + date.getHours() + seperator2 + date.getMinutes()
+						+ seperator2 + date.getSeconds();
+				return currentdate;
+			}
+	</script>
+	<script>
+		//接收服务器推送消息
+		var socket = io("http://127.0.0.1:3000/");
+		//接收服务器发送在线好友信息
+		socket.on("friendsListEvent",function(data){
+			$("#friendlist").html("");
+			console.log(data.oNick.length);
+			for(var i =0;i<data.oNick.length;i++)
+			{
+				//$("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
+				if($("#nickName").html() == data.oNick[i])
+				{
+					console.log("userName is not append");
+				}
+				else{
+					$("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
+				}
+			}
+
+			$(".friend").on("click",function(){
+				$("#showMsg").html("");
+				console.log("click friend: "+$(this).html());
+				$("#chatMsg").show();
+				$("#toName").html($(this).html());
+				console.log($("#toName").html());
+			})
+
+			socket.on("pushMsg",function(data){
+				console.log("push msg***********")
+				$("#chatMsg").show();
+				// $("#showMsg").html("");
+				var showText = data.from+"<br/>"+data.msg+" "+data.time+"<br/>";
+				$("#toName").html(data.to);
+				$("#showMsg").append(showText);
+			})
+		});
+	</script>
+	<script>
+		$(function(){
+			$("#chatMsg").hide();
+			var nick = prompt("please enter userName");
+			$("#nickName").html(nick);
+			socket.emit("nickEvent",{userName:nick});
+			//点击发送
+			$("#send").on("click",function(){
+				var sendto = $("#toName").html();
+				var textMsg = $("#text").val();
+				console.log(textMsg+"send: "+sendto);
+				if(sendto && sendto != "HX1610群")
+				{
+					if(textMsg)
+					{
+						var txt = $("#txt").val();
+							var oMsg ={
+								msg:textMsg,
+								from:nick,
+								to:sendto
+							}
+						$("#showMsg").append("me <br/>"+textMsg+" "+getNowFormatDate()+"<br/>");
+						socket.emit("priMsgEvent",oMsg);
+						$("#text").val("");
+					}
+					else{
+						alert("亲，没有输入消息哟！")
+					}
+				}
+				else{					
+					var textMsg = $("#text").val();
+					console.log(textMsg);
+					console.log(sendto);
+					if(textMsg)
+					{
+						var txt = $("#txt").val();
+							var oMsg ={
+								msg:textMsg,
+								from:nick,
+								to:"HX1610群"
+							}
+							$("#showMsg").append(nick+"<br/>"+textMsg+" "+getNowFormatDate()+"<br/>");
+							socket.emit("pubMsgEvent",oMsg);
+							$("#text").val("");
+					}
+					else{
+						alert("亲，没有输入消息哟！")
+					}
+				}
+
+			})
+
+			//点击群聊
+			$("#public").on("click",function(){
+				$("#chatMsg").show();
+				$("#toName").html("");
+				$("#showMsg").html("");
+				//var sento = $("#toName").val();				
+			})
+		})
+	</script>
+</head>
+<body>
+<p id="nickName"></p>
+<button id="public" style="float: left">public</button>
+<br/>
+<br/>
+<div id="friendlist" style="float: left;width: 150px;height: 400px;border: 1px yellow solid">
+<span>在线好友</span>
+<br/>
+</div>
+<div id="chatMsg" style="float: left;width: 400px;height: 400px;border: 1px red solid">
+	<p id="toName" style="height: 10%"></p>
+	<div id="showMsg" style="height: 70%;border: 1px green solid;overflow-y: auto"></div>
+	<div id="msg" style="height: 30%">
+		<input type="text" id="text" style="width: 80%;height: 30%">
+		<button id="send">send</button>
+	</div>
+</div>
+</body>
+</html>
