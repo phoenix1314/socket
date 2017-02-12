@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<script src="/socket.io/socket.io.js"></script>
+	<link href="../css/body.css" rel="stylesheet" type="text/css" />
+	<script src="../js/tools/jq3.js"></script>
+	<script src="../js/plugs/friend.js"></script>
+	<script src="../js/plugs/chat.js"></script>
+	<title></title>
+	<script>
+        //接收服务器推送消息
+        var socket = io("http://127.0.0.1:3000/");
+        socket.on("welcomeMsg",function(data){
+            console.log(data.info);
+            alert(data.info);
+            $("#list").append(data.info);
+        })
+        socket.on("friendsListEvent",function(data){
+            $("#list").html("");
+            console.log(data.oNick.length);
+            var pathImg = "../images/headimg/service.png"
+            for(var i =0;i<data.oNick.length;i++)
+            {
+                //$("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
+				var friendW = new  friend(100,40,pathImg,data.oNick[i]);
+				friendW.init("list");
+//                if($("#nickName").html() == data.oNick[i])
+//                {
+//                    console.log("userName is not append");
+//                }
+//                else{
+//                    $("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
+//                }
+            }
+//            $(".friend").on("click",function(){
+//                $("#showMsg").html("");
+//                console.log("click friend: "+$(this).html());
+//                $("#chatMsg").show();
+//                $("#toName").html($(this).html());
+//                console.log($("#toName").html());
+//            })
+        });
+
+	</script>
+	<script>
+		$(function () {
+		    $("#showCustomer").hide();
+			$("#customer").on({
+                "click":function () {
+                    console.log("click customer");
+                    //$("#showCustomer").toggle();
+                    $("#showCustomer").show();
+                },
+				"mouseover":function () {
+					$("#showCustomer").show();
+                }
+//                "mouseout":function () {
+//                    $("#showCustomer").hide();
+//                }
+			})
+
+
+        })//
+	</script>
+</head>
+<body>
+<div id="customer" style="width: 50px;height: 60px;border: 1px grey solid">
+	<img src="../images/headimg/service.png" style="width: 30px;height: 30px;">
+	<p>客服</p>
+</div>
+<div id="showCustomer" style="width: 300px;height: 400px;border: 1px red solid">
+	<div id="shopName" style="height: 10%;border: 1px green solid">
+		<h4>旗舰店</h4>
+	</div>
+	<div id="servicer" style="height: 50%;border: 1px yellow solid;overflow-y: auto">
+		<h4>客服列表</h4>
+		<div id="list" style="border: 1px purple solid;height: 100%">
+
+		</div>
+	</div>
+	<div id="work" style="height: 25%;border: 1px pink solid">
+		<h4>工作时间</h4>
+		<p>周一至周五： 9:00-22:00</p>
+		<p>周六至周日： 9:00-18:00</p>
+	</div>
+	<div id="contact" style="height: 15%;border: 1px blue solid">
+		<h4>联系方式</h4>
+		<p>联系电话：0592-111111</p>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/tools/jq3.js"></script>
+    <script src="../js/plugs/login.js"></script>
+    <script src="../js/plugs/chat.js"></script>
+    <title>Title</title>
+    <script>
+        //接收服务器推送消息
+        var socket = io("http://127.0.0.1:3000/");
+    </script>
+    <script>
+        $(function () {
+            var loginW = new login(300,100);
+            loginW.create("frame");
+            loginW.setLoginText("用户名","密  码");
+            loginW.setLoginBtn("登  录",loginCallback);
+
+            function loginCallback() {
+                var nick = loginW.user;
+                console.log("nick: "+nick);
+                socket.emit("nickEvent",{userName:nick});
+            }
+
+        })
+    </script>
+</head>
+<body>
+<div id="frame"></div>
+</body>
+</html>
