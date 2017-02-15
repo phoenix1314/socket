@@ -39,18 +39,19 @@ function  friend(w,h,headimg,friendName) {
         $(this).css("background-color","");
     })
 
-    this.init = function (frameId) {
+    this.init = function (frameId,hideId,chatId) {
         this.oDiv.appendTo($("#"+frameId));
 
         this.oDiv.on("click",function(){
             console.log("click friend***********")
+            $("#"+hideId).hide();
             var chatW =   new chat(400,500);
-            chatW.init(frameId);
+            chatW.init(chatId);
             chatW.setName($(this).find("span").text());
+
 
         })
     }
-
 
 
 }

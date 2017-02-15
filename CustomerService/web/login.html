@@ -14,7 +14,7 @@
     <script>
         $(function () {
             var loginW = new login(300,100);
-            loginW.create("frame");
+            loginW.create("login");
             loginW.setLoginText("用户名","密  码");
             loginW.setLoginBtn("登  录",loginCallback);
 
@@ -22,12 +22,18 @@
                 var nick = loginW.user;
                 console.log("nick: "+nick);
                 socket.emit("nickEvent",{userName:nick});
+                $("#login").hide;
+
+                var chatW = new chat(300,400);
+                chatW.init("frame");
             }
 
         })
     </script>
 </head>
 <body>
-<div id="frame"></div>
+<div id="frame">
+    <div id="login"></div>
+</div>
 </body>
 </html>

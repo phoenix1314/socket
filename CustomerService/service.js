@@ -114,10 +114,27 @@ io.sockets.on('connection',function(socket){
         io.emit("pushMsg",obj);
 
     })
-})
 
-io.sockets.on('disconnect',function(socket){
-    console(socket.id);
+    socket.on('disconnect',function(){
+        console.log("disconnect");
+        var nickname;
+        for(var i=0;i<aClient.length;i++)
+        {
+            if(aClient[i].id == socket.id)
+            {
+                nickname = aClient[i].name;
+                aClient.splice(i,1);
+            }
+        }
+        console.log(nickname + " is live");
+        var nickArray = [];
+        for(var i=0;i<aClient.length;i++)
+        {
+            nickArray.push(aClient[i].name);
+        }
+        io.sockets.emit("friendsListEvent",{oNick:nickArray});
+
+    })
 })
 
 console.log('server is runing!!!');

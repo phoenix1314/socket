@@ -7,6 +7,7 @@
 	<script src="../js/tools/jq3.js"></script>
 	<script src="../js/plugs/friend.js"></script>
 	<script src="../js/plugs/chat.js"></script>
+	<script src="../js/plugs/emoji.js"></script>
 	<title></title>
 	<script>
         //接收服务器推送消息
@@ -22,24 +23,9 @@
             var pathImg = "../images/headimg/service.png"
             for(var i =0;i<data.oNick.length;i++)
             {
-                //$("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
 				var friendW = new  friend(100,40,pathImg,data.oNick[i]);
-				friendW.init("list");
-//                if($("#nickName").html() == data.oNick[i])
-//                {
-//                    console.log("userName is not append");
-//                }
-//                else{
-//                    $("#friendlist").append("<p class='friend'>"+data.oNick[i]+"</p><hr/>")
-//                }
+				friendW.init("list","showCustomer","chat");
             }
-//            $(".friend").on("click",function(){
-//                $("#showMsg").html("");
-//                console.log("click friend: "+$(this).html());
-//                $("#chatMsg").show();
-//                $("#toName").html($(this).html());
-//                console.log($("#toName").html());
-//            })
         });
 
 	</script>
@@ -89,6 +75,7 @@
 		<p>联系电话：0592-111111</p>
 	</div>
 </div>
+<div id="chat"></div>
 
 </body>
 </html>
